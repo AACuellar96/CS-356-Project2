@@ -58,18 +58,13 @@ public class HashTable {
     }
 
     /**
-     * Puts a HashEntry containing the specified key and HashValue at the specified key. Also adds an extra string
-     * to the end of the key depending on the given object for when a User and a UserGroup share the same name.
+     * Puts a HashEntry containing the specified key and HashValue at the specified key. Sets key to value's tableID
+     * to allow classes to share unique names, eg a user can share his name with a group but not with another user.
      * @param key value of the HashValue.
      * @param value The data to put into that particular spot in the HashTable.
      */
     public void put(String key, baseUser value) {
-        if(value instanceof  User) {
-            key += "USER";
-        }
-        else {
-            key += "GROUP";
-        }
+        key=value.getTableID();
         if(size>=dataArray.length*.75) {
             reSize();
         }

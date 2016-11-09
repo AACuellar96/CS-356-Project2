@@ -1,6 +1,4 @@
-
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import javax.swing.tree.TreePath;
 import javax.swing.event.TreeSelectionEvent;
@@ -88,13 +86,13 @@ public class adminUI extends javax.swing.JFrame{
     private void addUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
         String uniqueName=userIDTextArea.getText();
         if(HashTable.getTable().get(uniqueName+"USER")==null) {
-            DefaultMutableTreeNode parentNode = null;
+            BaseNode parentNode = null;
             TreePath parentPath = tree.getSelectionPath();
             if (parentPath == null) {
                 parentNode = treeNode1;
             }
             else {
-                parentNode=(DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                parentNode=(BaseNode) tree.getLastSelectedPathComponent();
             }
             if(parentNode.getAllowsChildren()) {
                 UserNode newNode = new UserNode(uniqueName);
@@ -102,7 +100,7 @@ public class adminUI extends javax.swing.JFrame{
                 tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
                 tree.makeVisible(new TreePath(newNode.getPath()));
                 User newUser = new User(uniqueName);
-                ((UserGroup) HashTable.getTable().get(parentNode.toString()+"GROUP")).addToGroup(newUser);
+                ((UserGroup) HashTable.getTable().get(parentNode.getID())).addToGroup(newUser);
                 HashTable.getTable().put(uniqueName, newUser);
            }
         }
@@ -115,13 +113,13 @@ public class adminUI extends javax.swing.JFrame{
     private void addGroupButtonActionPerformed(java.awt.event.ActionEvent evt) {
         String uniqueName=groupIDTextArea.getText();
         if(HashTable.getTable().get(uniqueName+"GROUP")==null) {
-            DefaultMutableTreeNode parentNode = null;
+            BaseNode parentNode = null;
             TreePath parentPath = tree.getSelectionPath();
             if (parentPath == null) {
                 parentNode = treeNode1;
             }
             else {
-                parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
+                parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
             }
             if(parentNode.getAllowsChildren()) {
                 GroupNode newNode = new GroupNode(uniqueName);
@@ -129,7 +127,7 @@ public class adminUI extends javax.swing.JFrame{
                 tree.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
                 tree.makeVisible(new TreePath(newNode.getPath()));
                 UserGroup newGroup = new UserGroup(uniqueName);
-                ((UserGroup) HashTable.getTable().get(parentNode.toString()+"GROUP")).addToGroup(newGroup);
+                ((UserGroup) HashTable.getTable().get(parentNode.getID())).addToGroup(newGroup);
                 HashTable.getTable().put(uniqueName,newGroup);
             }
         }
@@ -139,15 +137,16 @@ public class adminUI extends javax.swing.JFrame{
      * @param evt
      */
     private void openUserViewButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        DefaultMutableTreeNode parentNode = null;
+        BaseNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
-        if (parentPath == null)
+        if (parentPath == null) {
             parentNode = treeNode1;
-        else {
-            parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
         }
-        if(HashTable.getTable().get(parentNode.toString()+"USER")!=null && parentNode.isLeaf()) {
-            baseUser temp = HashTable.getTable().get(parentNode.toString()+"USER");
+        else {
+            parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
+        }
+        if(HashTable.getTable().get(parentNode.getID())!=null && parentNode.isLeaf()) {
+            baseUser temp = HashTable.getTable().get(parentNode.getID());
             userUI uUI = new userUI((User) temp);
             userPanels.add(uUI);
             uUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -165,19 +164,17 @@ public class adminUI extends javax.swing.JFrame{
      * @param evt
      */
     private void showMessageTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        DefaultMutableTreeNode parentNode = null;
+        BaseNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
-        if (parentPath == null)
+        if (parentPath == null) {
             parentNode = treeNode1;
+        }
         else {
-            parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
+            parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
         }
         MsgTotalVisitor vis = new MsgTotalVisitor();
         baseUser target;
-        if(parentNode.getAllowsChildren())
-            target=HashTable.getTable().get(parentNode.toString()+"GROUP");
-        else
-            target=HashTable.getTable().get(parentNode.toString()+"USER");
+        target=HashTable.getTable().get(parentNode.getID());
         target.accept(vis);
         String message = "There are " + vis.getValue() + " messages in all news feeds.";
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.PLAIN_MESSAGE);
@@ -188,19 +185,17 @@ public class adminUI extends javax.swing.JFrame{
      * @param evt
      */
     private void showUserTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        DefaultMutableTreeNode parentNode = null;
+        BaseNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
-        if (parentPath == null)
+        if (parentPath == null) {
             parentNode = treeNode1;
+        }
         else {
-            parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
+            parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
         }
         UTotalVisitor vis = new UTotalVisitor();
         baseUser target;
-        if(parentNode.getAllowsChildren())
-            target=HashTable.getTable().get(parentNode.toString()+"GROUP");
-        else
-            target=HashTable.getTable().get(parentNode.toString()+"USER");
+        target=HashTable.getTable().get(parentNode.getID());
         target.accept(vis);
         String message = "There are " + vis.getValue() + " users.";
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.PLAIN_MESSAGE);
@@ -211,19 +206,17 @@ public class adminUI extends javax.swing.JFrame{
      * @param evt
      */
     private void showGroupTotalButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        DefaultMutableTreeNode parentNode = null;
+        BaseNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
-        if (parentPath == null)
+        if (parentPath == null) {
             parentNode = treeNode1;
+        }
         else {
-            parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
+            parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
         }
         GTotalVisitor vis = new GTotalVisitor();
         baseUser target;
-        if(parentNode.getAllowsChildren())
-            target=HashTable.getTable().get(parentNode.toString()+"GROUP");
-        else
-            target=HashTable.getTable().get(parentNode.toString()+"USER");
+        target=HashTable.getTable().get(parentNode.getID());
         target.accept(vis);
         String message = "There are " + vis.getValue() + " groups.";
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.PLAIN_MESSAGE);
@@ -234,19 +227,17 @@ public class adminUI extends javax.swing.JFrame{
      * @param evt
      */
     private void showPosPercButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        DefaultMutableTreeNode parentNode = null;
+        BaseNode parentNode = null;
         TreePath parentPath = tree.getSelectionPath();
-        if (parentPath == null)
+        if (parentPath == null) {
             parentNode = treeNode1;
+        }
         else {
-            parentNode = (DefaultMutableTreeNode) (tree.getLastSelectedPathComponent());
+            parentNode = (BaseNode) (tree.getLastSelectedPathComponent());
         }
         PosPercVisitor vis = new PosPercVisitor();
         baseUser target;
-        if(parentNode.getAllowsChildren())
-            target=HashTable.getTable().get(parentNode.toString()+"GROUP");
-        else
-            target=HashTable.getTable().get(parentNode.toString()+"USER");
+        target=HashTable.getTable().get(parentNode.getID());
         target.accept(vis);
         String message = "The percentage of positive messages is " + vis.getValue() + "%.";
         JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.PLAIN_MESSAGE);

@@ -19,6 +19,7 @@ public class UserGroup extends baseUser {
         memberUsers=new ArrayList<>();
     }
 
+
     /**
      * Only works when the baseUser already has no parent UserGroup. Ads the baseUser to the list of baseUser in this
      * group.
@@ -47,5 +48,12 @@ public class UserGroup extends baseUser {
          vis.record(this);
         for(int size=0;size<memberUsers.size();size++)
             memberUsers.get(size).accept(vis);
+    }
+    /**
+     * Groups id for hashtable storage
+     * @return uniqueID+"GROUP"
+     */
+    public String getTableID(){
+        return getUniqueID()+"GROUP";
     }
 }

@@ -49,4 +49,11 @@ public abstract class baseUser extends Observable{
      */
     abstract void accept(Visitor vis);
 
+    /**
+     * Abstract methods so all baseUsers in a hashtable can have unique names for their own class, eg a user can
+     * share a name with a group but not another user.
+     * @return uniqueID+class
+     */
+    abstract String getTableID();
+
 }

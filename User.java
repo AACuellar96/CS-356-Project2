@@ -81,4 +81,12 @@ public class User extends baseUser implements Observer{
     public void accept(Visitor vis){
         vis.record(this);
     }
+
+    /**
+     * Users id for hashtable storage
+     * @return uniqueID+"USER"
+     */
+    public String getTableID(){
+        return getUniqueID()+"USER";
+    }
 }
